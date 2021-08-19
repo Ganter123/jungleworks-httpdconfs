@@ -1,0 +1,15 @@
+NameVirtualHost *:80
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        ServerName delifoods.ch
+        ServerAlias www.delifoods.ch
+Redirect permanent / https://webapp.delifoods.ch
+</VirtualHost>
+<VirtualHost *:443>
+        ServerAdmin webmaster@localhost
+        ServerName delifoods.ch
+        ServerAlias www.delifoods.ch
+Redirect permanent / https://webapp.delifoods.ch
+SSLEngine ON
+SSLCertificateFile /etc/ssl/delifoods.pem
+</VirtualHost>

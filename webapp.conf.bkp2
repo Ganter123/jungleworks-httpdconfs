@@ -1,0 +1,62 @@
+NameVirtualHost *:443
+NameVirtualHost *:80
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        ServerName delifoods.ch
+        ServerAlias www.delifoods.ch
+Redirect permanent / https://delifoods.ch
+</VirtualHost>
+<VirtualHost *:443>
+        ServerAdmin webmaster@localhost
+        ServerName delifoods.ch
+        ServerAlias www.delifoods.ch
+ RewriteEngine On
+
+RewriteCond %{HTTP:Accept-Language} ^en [NC]
+RewriteRule ^/$ https://delifoods.ch/en/ [L,R=301]
+
+RewriteCond %{HTTP:Accept-Language} ^fr [NC]
+RewriteRule ^/$ https://delifoods.ch/fr/ [L,R=301]
+
+#RewriteCond %{HTTP:Accept-Language} ^ar [NC]
+#RewriteRule ^/$ https://delifoods.ch/ar/ [L,R=301]
+
+        DocumentRoot /var/www/html/live/delifoods-webapp-live/dist
+        ErrorLog /var/log/httpd/ivoryslive_error.log
+        CustomLog /var/log/httpd/ivoryslive_access.log combined
+        <Directory "/var/www/html/live/delifoods-webapp-live/dist/en">
+        AllowOverride All
+        Require all granted
+         RewriteEngine on
+                RewriteCond %{REQUEST_FILENAME} -f [OR]
+                RewriteCond %{REQUEST_FILENAME} -d
+                RewriteRule ^ - [L]
+                RewriteRule ^ index.html
+        </Directory>
+       <Directory "/var/www/html/live/delifoods-webapp-live/dist/fr">
+        AllowOverride All
+        Require all granted
+         RewriteEngine on
+                RewriteCond %{REQUEST_FILENAME} -f [OR]
+                RewriteCond %{REQUEST_FILENAME} -d
+                RewriteRule ^ - [L]
+                RewriteRule ^ index.html
+        </Directory>
+<Directory "/var/www/html/live/delifoods-webapp-live/dist">
+                RewriteEngine on
+                RewriteCond %{REQUEST_FILENAME} -f [OR]
+                RewriteCond %{REQUEST_FILENAME} -d
+                RewriteRule ^ - [L]
+                RewriteRule ^ index.html
+        </Directory>
+SetOutputFilter DEFLATE
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ \
+    no-gzip dont-vary
+SetEnvIfNoCase Request_URI \.pdf$ no-gzip dont-vary
+
+<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|swf|js)$">
+Header set Cache-Control "max-age=604800, public"
+</FilesMatch>
+SSLEngine ON
+SSLCertificateFile /etc/ssl/delifoods.pem
+</VirtualHost>
